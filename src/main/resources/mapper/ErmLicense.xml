@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.tcc.ofa.erm.mapper.ErmLicenseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.tcc.ofa.erm.model.po.ErmLicense">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="is_template" property="isTemplate" />
+        <result column="vendor_license_url" property="vendorLicenseUrl" />
+        <result column="vendor_license_url_date_accessed" property="vendorLicenseUrlDateAccessed" />
+        <result column="second_vendor_license_url" property="secondVendorLicenseUrl" />
+        <result column="local_license_url" property="localLicenseUrl" />
+        <result column="second_local_license_url" property="secondLocalLicenseUrl" />
+        <result column="physical_location" property="physicalLocation" />
+        <result column="status" property="status" />
+        <result column="reviewer" property="reviewer" />
+        <result column="is_send_email_reviewer" property="isSendEmailReviewer" />
+        <result column="reviewer_note" property="reviewerNote" />
+        <result column="license_replaces_by" property="licenseReplacesBy" />
+        <result column="license_replaces" property="licenseReplaces" />
+        <result column="execution_date" property="executionDate" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="advance_notify_days" property="advanceNotifyDays" />
+        <result column="is_send_email_regularly" property="isSendEmailRegularly" />
+        <result column="license_duration" property="licenseDuration" />
+        <result column="license_note" property="licenseNote" />
+        <result column="org_id" property="orgId" />
+        <result column="create_by" property="createBy" />
+        <result column="update_by" property="updateBy" />
+    </resultMap>
+
+    <select id="pageList" resultType="cn.com.tcc.ofa.erm.model.vo.ErmLicenseVo">
+        SELECT
+            el.id id,
+            el.`name` name,
+            GROUP_CONCAT(eld.default_database_name Separator ',') databaseName,
+            em.item_name type,
+            em.id typeId,
+            em1.item_name status,
+            em1.id statusId,
+            el.start_date startDate,
+            el.end_date endDate
+        FROM
+            erm_license el
+        LEFT JOIN erm_menus em ON el.type = em.id AND em.is_delete = 0
+        LEFT JOIN erm_menus em1 ON el.`status` = em1.id AND em1.is_delete = 0
+        LEFT JOIN erm_database_license_ref edlr ON el.id = edlr.license_id
+        LEFT JOIN erm_local_database eld ON eld.id = edlr.database_id AND eld.is_delete = 0
+        <where>
+            <if test="dto.type != null">
+                AND em.id = #{dto.type}
+            </if>
+            <if test="dto.status != null">
+                AND em1.id = #{dto.status}
+            </if>
+            <if test="dto.startDate != null">
+                AND el.start_date &gt;= #{dto.startDate}
+            </if>
+            <if test="dto.endDate != null">
+                AND el.end_date &lt;= #{dto.endDate}
+            </if>
+            <if test="dto.isTemplate != null">
+                AND el.is_template = #{dto.isTemplate}
+            </if>
+            <if test="dto.databaseId != null">
+                <choose>
+                    <when test="dto.isAssociated != null">
+                        <if test="dto.isAssociated == 0">
+                            AND el.id NOT IN (SELECT license_id FROM erm_database_license_ref WHERE database_id = #{dto.databaseId})
+                        </if>
+                    </when>
+                    <otherwise>
+                        AND eld.id = #{dto.databaseId}
+                    </otherwise>
+                </choose>
+            </if>
+            AND el.is_delete = 0
+        </where>
+        GROUP BY el.id
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'name'">
+                    ORDER BY el.name
+                </if>
+                <if test="dto.sortColumns == 'startDate'">
+                    ORDER BY el.start_date
+                </if>
+                <if test="dto.sortColumns == 'endDate'">
+                    ORDER BY el.end_date
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY el.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="pageResources" resultType="cn.com.tcc.ofa.erm.model.vo.ErmLicenseDatabaseVo">
+        SELECT
+            eld.id id,
+            eld.default_database_name databaseName,
+            ep.provider_name providerName
+        FROM
+            erm_license el
+        INNER JOIN erm_database_license_ref edlr ON el.id = edlr.license_id
+        INNER JOIN erm_local_database eld ON eld.id = edlr.database_id AND eld.is_delete = 0
+        LEFT JOIN erm_provider ep ON eld.provider_id = ep.id AND ep.is_delete = 0
+        <where>
+            <if test="dto.licenseId != null">
+                AND el.id = #{dto.licenseId}
+            </if>
+        </where>
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'databaseName'">
+                    ORDER BY eld.default_database_name
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+                AND eld.is_delete = 0
+            </when>
+            <otherwise>
+                ORDER BY eld.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

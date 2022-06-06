@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.tcc.ofa.erm.mapper.ErmLocalDatabaseMapper">
+
+    <select id="pageList" parameterType="cn.com.tcc.ofa.erm.model.dto.ErmLocalDatabaseDto" resultType="cn.com.tcc.ofa.erm.model.vo.ErmLocalDatabaseVo">
+        SELECT
+            eld.id,
+            eld.default_database_name defaultDatabaseName,
+            eld.custom_database_name customDatabaseName,
+            eld.`code` `code`,
+            eld.approval_status approvalStatus,
+            CASE eld.approval_status WHEN 1 THEN '未提交' WHEN 2 THEN '审批中' WHEN 3 THEN '已通过' WHEN 4 THEN '已拒绝' END approvalStatusStr,
+            eld.effective_status effectiveStatus,
+            CASE eld.effective_status WHEN 0 THEN '未生效' WHEN 1 THEN '已生效' END effectiveStatusStr,
+            eld.effective_time effectiveTime,
+            em.item_name `status`,
+            edc.`name` collectionName,
+            ep.provider_name providerName
+        FROM
+            erm_local_database eld
+        LEFT JOIN erm_provider ep ON eld.provider_id = ep.id AND ep.is_delete = 0
+        LEFT JOIN erm_database_collection edc ON eld.collection_id = edc.id AND edc.is_delete = 0
+        LEFT JOIN erm_menus em ON eld.`status` = em.id AND em.is_delete = 0
+        LEFT JOIN erm_database_license_ref edlr ON eld.id = edlr.database_id
+        LEFT JOIN erm_license el ON el.id = edlr.license_id AND el.is_delete = 0
+        <where>
+            <if test="dto.filterRule == 1 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT(#{dto.filterValue}, "%")
+            </if>
+            <if test="dto.filterRule == 2 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT(#{dto.filterValue})
+            </if>
+            <if test="dto.filterRule != 1 and dto.filterRule != 2 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT("%", #{dto.filterValue}, "%")
+            </if>
+            <if test="dto.status != null">
+                AND em.id = #{dto.status}
+            </if>
+            <if test="dto.collectionId != null">
+                AND edc.id = #{dto.collectionId}
+            </if>
+            <if test="dto.approvalStatus != null">
+                AND eld.approval_status = #{dto.approvalStatus}
+            </if>
+            <if test="dto.effectiveStatus != null">
+                AND eld.effective_status = #{dto.effectiveStatus}
+            </if>
+            <if test="dto.providerId != null">
+                AND eld.provider_id = #{dto.providerId}
+            </if>
+            <if test="dto.licenseId != null and dto.isAssociated == 0">
+                AND eld.id NOT IN (SELECT database_id FROM erm_database_license_ref WHERE license_id = #{dto.licenseId})
+            </if>
+            AND eld.is_delete = 0
+        </where>
+        GROUP BY eld.id
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'defaultDatabaseName'">
+                    ORDER BY eld.default_database_name
+                </if>
+                <if test="dto.sortColumns == 'customDatabaseName'">
+                    ORDER BY eld.custom_database_name
+                </if>
+                <if test="dto.sortColumns == 'code'">
+                    ORDER BY eld.code
+                </if>
+                <if test="dto.sortColumns == 'effectiveTime'">
+                    ORDER BY eld.effective_time
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY eld.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+    <select id="pageLicenses" resultType="cn.com.tcc.ofa.erm.model.vo.ErmDatabaseLicenseVo">
+        SELECT
+            el.id,
+            el.`name` name,
+            em.item_name type,
+            em1.item_name status,
+            el.start_date startDate,
+            el.end_date endDate,
+            edlf.is_prevailing isPrevailing
+        FROM
+            erm_local_database eld
+        INNER JOIN erm_database_license_ref edlf ON eld.id = edlf.database_id
+        INNER JOIN erm_license el ON el.id = edlf.license_id AND el.is_delete = 0
+        LEFT JOIN erm_menus em ON el.type = em.id AND em.is_delete = 0
+        LEFT JOIN erm_menus em1 ON el.`status` = em1.id AND em1.is_delete = 0
+        <where>
+            <if test="dto.databaseId != null">
+                AND eld.id = #{dto.databaseId}
+            </if>
+            AND el.is_delete = 0
+        </where>
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'name'">
+                    ORDER BY el.name
+                </if>
+                <if test="dto.sortColumns == 'startDate'">
+                    ORDER BY el.start_date
+                </if>
+                <if test="dto.sortColumns == 'endDate'">
+                    ORDER BY el.end_date
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY el.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

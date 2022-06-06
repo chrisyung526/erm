@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    ​
+    <springProperty scope="context" name="application" source="spring.application.name"/>
+    <springProperty scope="context" name="profile" source="spring.profiles.active"/>
+    <springProperty name="logstash_host" source="logging.logstash.host"/>
+    <springProperty name="logstash_port" source="logging.logstash.port"/>
+    <!-- Example for logging into the build folder of your project -->
+    <property name="LOG_FILE" value="/opt/data/jar/logs/${application}/${application}-${profile}.log"/>​
+    <property name="LOGSTASH_SERVER" value="${logstash_host}:${logstash_port}"/>​
+
+    <!-- Appender to log to console -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Appender to log to file -->​
+    <appender name="flatfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    ​
+    <!-- Appender to log to file in a JSON format -->
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_SERVER}</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!-- 本地环境 -->
+    <springProfile name="local">
+        <logger name="cn.com.tcc.ofa" level="debug" ></logger>
+        <logger name="com.alibaba.nacos.client.naming" level="error"></logger>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <!--<appender-ref ref="logstash"/>-->
+            <!--<appender-ref ref="flatfile"/>-->
+        </root>
+    </springProfile>
+
+    <!-- 开发、测试环境 -->
+    <springProfile name="dev,test">
+        <logger name="cn.com.tcc.ofa" level="DEBUG" ></logger>
+        <logger name="com.alibaba.nacos.client.naming" level="error"></logger>
+        <logger name="com.alibaba.nacos.client.config.impl" level="error"></logger>
+        <root level="INFO">
+            <appender-ref ref="logstash"/>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境 -->
+    <springProfile name="prod,sy">
+        <logger name="com.alibaba.nacos.client.naming" level="error"></logger>
+        <root level="INFO">
+            <appender-ref ref="logstash"/>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+</configuration>

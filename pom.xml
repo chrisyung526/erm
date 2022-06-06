@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ofa-dependencies</artifactId>
+        <groupId>cn.com.tcc.ofa</groupId>
+        <version>1.0.0-HK-RELEASE</version>
+<!--        <version>2.0.0-RELEASE</version>-->
+        <relativePath/>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.com.tcc.ofa</groupId>
+    <artifactId>erm-admin-service</artifactId>
+    <version>${tcc.version}</version>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.com.tcc.ofa</groupId>
+            <artifactId>ofa-common</artifactId>
+            <version>1.0.0-${tcc.active}</version>
+<!--            <version>${project.parent.version}</version>-->
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.0</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>tcc-maven-public</id>
+            <name>tcc-maven-public</name>
+            <url>http://j.tcsoft.info:58080/nexus/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://j.tcsoft.info:58080/nexus/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot</name>
+            <url>http://j.tcsoft.info:58080/nexus/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

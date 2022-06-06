@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.tcc.ofa.erm.mapper.ErmDatabaseCollectionRefMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.tcc.ofa.erm.model.po.ErmDatabaseCollectionRef">
+        <id column="id" property="id" />
+        <result column="collection_id" property="collectionId" />
+        <result column="database_id" property="databaseId" />
+    </resultMap>
+
+</mapper>

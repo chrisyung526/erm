@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.tcc.ofa.erm.mapper.ErmProviderMapper">
+
+    <select id="pageList" resultType="cn.com.tcc.ofa.erm.model.vo.ErmProviderVo">
+        SELECT
+            ep.id,
+            ep.provider_name providerName,
+            ep.`code` code,
+            GROUP_CONCAT(eld.default_database_name Separator ',') defaultDatabaseName
+        FROM
+            erm_provider ep
+        LEFT JOIN erm_local_database eld ON ep.id = eld.provider_id AND eld.is_delete = 0
+        <where>
+            <if test="dto.filterRule == 1 and dto.filterValue != null">
+                AND ep.provider_name LIKE CONCAT(#{dto.filterValue}, "%")
+            </if>
+            <if test="dto.filterRule == 2 and dto.filterValue != null">
+                AND ep.provider_name LIKE CONCAT(#{dto.filterValue})
+            </if>
+            <if test="dto.filterRule != 1 and dto.filterRule != 2 and dto.filterValue != null">
+                AND ep.provider_name LIKE CONCAT("%", #{dto.filterValue}, "%")
+            </if>
+            <if test="dto.databaseId != null">
+                AND eld.id = #{dto.databaseId}
+            </if>
+            AND ep.is_delete = 0
+        </where>
+        GROUP BY ep.id
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'providerName'">
+                    ORDER BY ep.provider_name
+                </if>
+                <if test="dto.sortColumns == 'code'">
+                    ORDER BY ep.code
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY ep.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+    <select id="pageResources" resultType="cn.com.tcc.ofa.erm.model.vo.ErmProviderDatabaseVo">
+        SELECT
+            eld.id,
+            eld.default_database_name databaseName,
+            em.item_name status
+        FROM
+            erm_provider ep
+        INNER JOIN erm_local_database eld ON ep.id = eld.provider_id AND eld.is_delete = 0
+        LEFT JOIN erm_menus em ON eld.`status` = em.id AND em.is_delete = 0
+        <where>
+            <if test="dto.providerId != null">
+                AND eld.provider_id = #{dto.providerId}
+            </if>
+            <if test="dto.filterRule == 1 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT(#{dto.filterValue}, "%")
+            </if>
+            <if test="dto.filterRule == 2 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT(#{dto.filterValue})
+            </if>
+            <if test="dto.filterRule != 1 and dto.filterRule != 2 and dto.filterValue != null">
+                AND eld.default_database_name LIKE CONCAT("%", #{dto.filterValue}, "%")
+            </if>
+            <if test="dto.status != null">
+                AND em.id = #{dto.status}
+            </if>
+            AND eld.is_delete = 0
+        </where>
+        <choose>
+            <when test="dto.sortColumns != null">
+                <if test="dto.sortColumns == 'databaseName'">
+                    ORDER BY eld.default_database_name
+                </if>
+                <if test="dto.sortDesc == true">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY eld.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

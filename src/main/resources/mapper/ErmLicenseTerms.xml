@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.tcc.ofa.erm.mapper.ErmLicenseTermsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.tcc.ofa.erm.model.po.ErmLicenseTerms">
+        <id column="id" property="id" />
+        <result column="license_id" property="licenseId" />
+        <result column="authorized_users" property="authorizedUsers" />
+        <result column="authorized_users_note" property="authorizedUsersNote" />
+        <result column="concurrent_users" property="concurrentUsers" />
+        <result column="concurrent_users_note" property="concurrentUsersNote" />
+        <result column="fair_use_clause_indicator" property="fairUseClauseIndicator" />
+        <result column="database_protection_oerride_clause_indicator" property="databaseProtectionOerrideClauseIndicator" />
+        <result column="all_rights_reserved_indicator" property="allRightsReservedIndicator" />
+        <result column="citation_requirement_detail" property="citationRequirementDetail" />
+        <result column="digitally_copy" property="digitallyCopy" />
+        <result column="digitally_copy_note" property="digitallyCopyNote" />
+        <result column="print_copy" property="printCopy" />
+        <result column="print_copy_note" property="printCopyNote" />
+        <result column="scholarly_sharing" property="scholarlySharing" />
+        <result column="scholarly_sharing_note" property="scholarlySharingNote" />
+        <result column="distance_learning" property="distanceLearning" />
+        <result column="distance_learning_note" property="distanceLearningNote" />
+        <result column="ILL_general" property="illGeneral" />
+        <result column="ILL_secure_ electronic" property="illSecure electronic" />
+        <result column="ILL_electronic" property="illElectronic" />
+        <result column="ILL_record_keeping" property="illRecordKeeping" />
+        <result column="ILL_record_keeping_note" property="illRecordKeepingNote" />
+        <result column="course_reserve" property="courseReserve" />
+        <result column="course_reserve_note" property="courseReserveNote" />
+        <result column="electronic_link" property="electronicLink" />
+        <result column="electronic_link_note" property="electronicLinkNote" />
+        <result column="course_pack_print" property="coursePackPrint" />
+        <result column="course_pack_electronic" property="coursePackElectronic" />
+        <result column="course_pack_note" property="coursePackNote" />
+        <result column="remote_access" property="remoteAccess" />
+        <result column="remote_access_note" property="remoteAccessNote" />
+        <result column="other_use_restrictions_staff_note" property="otherUseRestrictionsStaffNote" />
+        <result column="other_use_restrictions_public_note" property="otherUseRestrictionsPublicNote" />
+        <result column="perpetual_access_right" property="perpetualAccessRight" />
+        <result column="perpetual_access_holdings" property="perpetualAccessHoldings" />
+        <result column="perpetual_access_note" property="perpetualAccessNote" />
+        <result column="license_termination_right" property="licenseTerminationRight" />
+        <result column="license_termination_condition" property="licenseTerminationCondition" />
+        <result column="license_termination_condition_note" property="licenseTerminationConditionNote" />
+        <result column="license_notice_period_termination" property="licenseNoticePeriodTermination" />
+        <result column="is_license_notice_period_termination" property="isLicenseNoticePeriodTermination" />
+        <result column="termination_right_note" property="terminationRightNote" />
+        <result column="termination_requirements" property="terminationRequirements" />
+        <result column="terms_note" property="termsNote" />
+        <result column="local_use_terms_note" property="localUseTermsNote" />
+        <result column="governing_law" property="governingLaw" />
+        <result column="governing_jurisdiction" property="governingJurisdiction" />
+        <result column="applicable_copyright_law" property="applicableCopyrightLaw" />
+        <result column="cure_period_for_breach" property="curePeriodForBreach" />
+        <result column="is_cure_period_for_breach" property="isCurePeriodForBreach" />
+        <result column="renewal_type" property="renewalType" />
+        <result column="non_renewal_notice_period" property="nonRenewalNoticePeriod" />
+        <result column="is_non_renewal_notice_period" property="isNonRenewalNoticePeriod" />
+        <result column="archiving_right" property="archivingRight" />
+        <result column="archiving_format" property="archivingFormat" />
+        <result column="archiving_note" property="archivingNote" />
+        <result column="pre_print_archive_allowed" property="prePrintArchiveAllowed" />
+        <result column="pre_print_archive_conditions" property="prePrintArchiveConditions" />
+        <result column="pre_print_archive_restrictions" property="prePrintArchiveRestrictions" />
+        <result column="is_pre_print_archive_restrictions" property="isPrePrintArchiveRestrictions" />
+        <result column="pre_print_archive_note" property="prePrintArchiveNote" />
+        <result column="post_print_archive_allowed" property="postPrintArchiveAllowed" />
+        <result column="post_print_archive_conditions" property="postPrintArchiveConditions" />
+        <result column="post_print_archive_restrictions" property="postPrintArchiveRestrictions" />
+        <result column="is_post_print_archive_restrictions" property="isPostPrintArchiveRestrictions" />
+        <result column="post_print_archive_note" property="postPrintArchiveNote" />
+        <result column="incorporation_of_images_figures_and_tables_right" property="incorporationOfImagesFiguresAndTablesRight" />
+        <result column="incorporation_of_images_figures_and_tables_note" property="incorporationOfImagesFiguresAndTablesNote" />
+        <result column="public_performance_right" property="publicPerformanceRight" />
+        <result column="public_performance_note" property="publicPerformanceNote" />
+        <result column="training_materials_right" property="trainingMaterialsRight" />
+        <result column="training_materials_note" property="trainingMaterialsNote" />
+        <result column="is_delete" property="isDelete" />
+        <result column="org_id" property="orgId" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+    </resultMap>
+
+</mapper>
